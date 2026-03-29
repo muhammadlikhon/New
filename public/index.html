@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BDTickets — Bus E-Ticketing Bangladesh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --green: #00A86B;
+  --green-dark: #007A4D;
+  --green-light: #E6F7F1;
+  --red: #E63946;
+  --amber: #F4A261;
+  --navy: #0D1B2A;
+  --navy-2: #1B2B3B;
+  --navy-3: #243447;
+  --slate: #8899AA;
+  --slate-light: #C8D5E0;
+  --white: #F8FAFC;
+  --card: #ffffff;
+  --border: #E2EBF0;
+  --shadow: 0 2px 16px rgba(13,27,42,0.10);
+  --shadow-lg: 0 8px 40px rgba(13,27,42,0.16);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:#F0F4F8;color:var(--navy);min-height:100vh}
+button{cursor:pointer;font-family:var(--font-body)}
+input,select{font-family:var(--font-body)}
+a{text-decoration:none;color:inherit}
+
+/* ── Layout ── */
+.app{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── Navbar ── */
+.navbar{
+  background:var(--navy);
+  padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 12px rgba(0,0,0,0.2);
+}
+.nav-logo{
+  font-family:var(--font-head);font-size:1.5rem;font-weight:800;
+  color:#fff;letter-spacing:-0.5px;
+  display:flex;align-items:center;gap:8px;
+}
+.nav-logo span{color:var(--green)}
+.nav-links{display:flex;gap:8px;align-items:center}
+.nav-btn{
+  padding:8px 18px;border-radius:var(--radius-sm);border:none;
+  font-size:.875rem;font-weight:500;transition:all .2s;
+}
+.nav-btn.ghost{background:transparent;color:var(--slate-light)}
+.nav-btn.ghost:hover{color:#fff;background:var(--navy-3)}
+.nav-btn.primary{background:var(--green);color:#fff}
+.nav-btn.primary:hover{background:var(--green-dark)}
+.nav-btn.outline{background:transparent;color:var(--slate-light);border:1px solid var(--navy-3)}
+.nav-btn.outline:hover{border-color:var(--green);color:var(--green)}
+.nav-user{display:flex;align-items:center;gap:10px;color:var(--slate-light);font-size:.875rem}
+.nav-avatar{
+  width:34px;height:34px;border-radius:50%;background:var(--green);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.85rem;color:#fff;font-family:var(--font-head);
+}
+
+/* ── Hero ── */
+.hero{
+  background:var(--navy);
+  padding:4rem 2rem 3rem;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 80% 50%, rgba(0,168,107,0.15) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-inner{max-width:900px;margin:0 auto;position:relative}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(0,168,107,0.15);border:1px solid rgba(0,168,107,0.3);
+  color:var(--green);padding:4px 12px;border-radius:20px;
+  font-size:.78rem;font-weight:500;margin-bottom:1.2rem;letter-spacing:.5px;text-transform:uppercase;
+}
+.hero h1{
+  font-family:var(--font-head);font-size:clamp(2rem,5vw,3.2rem);
+  font-weight:800;color:#fff;line-height:1.1;margin-bottom:.75rem;
+}
+.hero h1 em{color:var(--green);font-style:normal}
+.hero p{color:var(--slate);font-size:1.05rem;margin-bottom:2.5rem;max-width:500px;line-height:1.7}
+
+/* ── Search Box ── */
+.search-box{
+  background:var(--card);border-radius:var(--radius);
+  padding:1.5rem;box-shadow:var(--shadow-lg);
+}
+.search-box h3{
+  font-family:var(--font-head);font-size:1rem;font-weight:700;
+  color:var(--navy);margin-bottom:1rem;
+}
+.search-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:12px;align-items:end}
+@media(max-width:768px){.search-grid{grid-template-columns:1fr 1fr;}}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group label{font-size:.75rem;font-weight:500;color:var(--slate);text-transform:uppercase;letter-spacing:.5px}
+.form-group input,.form-group select{
+  border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:10px 12px;font-size:.9rem;color:var(--navy);
+  outline:none;transition:border-color .2s;background:#fff;
+}
+.form-group input:focus,.form-group select:focus{border-color:var(--green)}
+.btn{
+  padding:11px 24px;border-radius:var(--radius-sm);border:none;
+  font-size:.9rem;font-weight:600;font-family:var(--font-head);
+  transition:all .2s;white-space:nowrap;
+}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:var(--green-dark);transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--navy)}
+.btn-outline:hover{border-color:var(--green);color:var(--green)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{background:#c1121f}
+.btn-sm{padding:7px 14px;font-size:.8rem}
+.btn-full{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+/* ── Page ── */
+.page{max-width:960px;margin:0 auto;padding:2rem 1.5rem}
+.page-wide{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+
+/* ── Section title ── */
+.section-title{
+  font-family:var(--font-head);font-size:1.4rem;font-weight:700;
+  color:var(--navy);margin-bottom:1.2rem;
+}
+.section-title span{color:var(--green)}
+
+/* ── Cards ── */
+.card{background:var(--card);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border)}
+.card+.card{margin-top:1rem}
+
+/* ── Bus result card ── */
+.bus-card{
+  background:var(--card);border-radius:var(--radius);padding:1.5rem;
+  border:1.5px solid var(--border);box-shadow:var(--shadow);
+  transition:border-color .2s,box-shadow .2s;
+  display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:center;
+}
+.bus-card:hover{border-color:var(--green);box-shadow:0 4px 24px rgba(0,168,107,0.12)}
+.bus-card+.bus-card{margin-top:1rem}
+.bus-name{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy)}
+.bus-meta{display:flex;flex-wrap:wrap;gap:12px;margin-top:.5rem}
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;
+}
+.badge-green{background:var(--green-light);color:var(--green-dark)}
+.badge-navy{background:var(--navy-2);color:var(--slate-light)}
+.badge-amber{background:#FFF3E0;color:#E65100}
+.bus-route{
+  display:flex;align-items:center;gap:12px;margin-top:.75rem;
+  font-size:.9rem;color:var(--navy);font-weight:500;
+}
+.route-line{flex:1;height:1.5px;background:linear-gradient(90deg,var(--green),var(--slate-light));border-radius:2px}
+.bus-price{
+  text-align:right;
+}
+.price-amount{font-family:var(--font-head);font-size:1.6rem;font-weight:800;color:var(--green)}
+.price-label{font-size:.75rem;color:var(--slate);margin-top:2px}
+.seats-left{font-size:.78rem;color:var(--slate);margin-top:6px}
+
+/* ── Seat map ── */
+.seat-map-wrap{margin-top:1.2rem}
+.seat-legend{display:flex;gap:16px;margin-bottom:1rem;flex-wrap:wrap}
+.seat-legend-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--slate)}
+.seat-legend-dot{width:14px;height:14px;border-radius:4px}
+.seat-grid{display:flex;flex-direction:column;gap:6px;align-items:center}
+.seat-row{display:flex;gap:6px;align-items:center}
+.seat-aisle{width:20px}
+.seat{
+  width:36px;height:36px;border-radius:6px;border:none;
+  font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;
+}
+.seat.available{background:#E6F7F1;color:var(--green-dark);border:1.5px solid #b2dece}
+.seat.available:hover{background:var(--green);color:#fff;transform:scale(1.1)}
+.seat.booked{background:#F1F3F5;color:#aaa;cursor:not-allowed;border:1.5px solid #e2e8f0}
+.seat.selected{background:var(--green);color:#fff;border:1.5px solid var(--green-dark);transform:scale(1.05)}
+
+/* ── Booking summary ── */
+.booking-summary{
+  background:var(--navy);color:#fff;border-radius:var(--radius);
+  padding:1.5rem;position:sticky;top:80px;
+}
+.booking-summary h3{font-family:var(--font-head);font-size:1rem;font-weight:700;margin-bottom:1rem;color:#fff}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--navy-3);font-size:.875rem}
+.summary-row:last-child{border:none;font-size:1.05rem;font-weight:700;color:var(--green);padding-top:12px}
+.summary-label{color:var(--slate)}
+
+/* ── Payment methods ── */
+.payment-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1rem 0}
+.pay-method{
+  border:2px solid var(--border);border-radius:var(--radius-sm);
+  padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;
+  font-size:.82rem;font-weight:600;color:var(--navy);background:#fff;
+}
+.pay-method:hover{border-color:var(--green)}
+.pay-method.active{border-color:var(--green);background:var(--green-light);color:var(--green-dark)}
+.pay-icon{font-size:1.4rem;margin-bottom:4px}
+
+/* ── Ticket ── */
+.ticket{
+  background:var(--card);border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow-lg);border:1px solid var(--border);max-width:480px;margin:0 auto;
+}
+.ticket-header{background:var(--navy);padding:1.5rem;color:#fff}
+.ticket-header h2{font-family:var(--font-head);font-size:1.1rem;font-weight:700}
+.ticket-body{padding:1.5rem}
+.ticket-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--border);font-size:.875rem}
+.ticket-row:last-child{border:none}
+.ticket-key{color:var(--slate);font-size:.78rem;text-transform:uppercase;letter-spacing:.4px}
+.ticket-val{font-weight:600;color:var(--navy);text-align:right;max-width:60%}
+.ticket-qr{text-align:center;padding:1rem 0;border-top:2px dashed var(--border);margin-top:.5rem}
+.ticket-qr img{width:140px;height:140px;border-radius:8px}
+.ticket-code{
+  margin-top:.5rem;font-family:var(--font-head);font-size:1.1rem;
+  font-weight:700;color:var(--navy);letter-spacing:2px;
+}
+.ticket-footer{
+  background:var(--green-light);padding:1rem 1.5rem;
+  font-size:.78rem;color:var(--green-dark);text-align:center;
+  border-top:1px solid #c8e6d8;
+}
+
+/* ── Auth forms ── */
+.auth-wrap{
+  max-width:440px;margin:3rem auto;
+  background:var(--card);border-radius:var(--radius);
+  padding:2.5rem;box-shadow:var(--shadow-lg);border:1px solid var(--border);
+}
+.auth-wrap h2{font-family:var(--font-head);font-size:1.6rem;font-weight:800;color:var(--navy);margin-bottom:.3rem}
+.auth-wrap p{color:var(--slate);font-size:.9rem;margin-bottom:2rem}
+.input-group{margin-bottom:1.1rem}
+.input-group label{display:block;font-size:.8rem;font-weight:500;color:var(--slate);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.input-group input,.input-group select{
+  width:100%;padding:11px 14px;border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);font-size:.9rem;color:var(--navy);outline:none;transition:border-color .2s;
+}
+.input-group input:focus,.input-group select:focus{border-color:var(--green)}
+.auth-switch{text-align:center;margin-top:1.2rem;font-size:.875rem;color:var(--slate)}
+.auth-switch button{background:none;border:none;color:var(--green);font-weight:600;font-size:.875rem;cursor:pointer}
+
+/* ── Dashboard tabs ── */
+.dash-tabs{display:flex;gap:4px;background:#E8EFF5;border-radius:10px;padding:4px;margin-bottom:1.5rem}
+.dash-tab{
+  flex:1;padding:9px 12px;border:none;border-radius:7px;background:transparent;
+  font-size:.83rem;font-weight:600;color:var(--slate);transition:all .2s;font-family:var(--font-head);cursor:pointer;
+}
+.dash-tab.active{background:#fff;color:var(--navy);box-shadow:0 1px 6px rgba(0,0,0,.08)}
+
+/* ── Stats cards ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{
+  background:var(--card);border-radius:var(--radius);padding:1.2rem 1.5rem;
+  border:1px solid var(--border);box-shadow:var(--shadow);
+}
+.stat-number{font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--navy)}
+.stat-label{font-size:.78rem;color:var(--slate);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.stat-change{font-size:.78rem;color:var(--green);margin-top:4px;font-weight:500}
+
+/* ── Table ── */
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--navy)}
+th{padding:12px 16px;text-align:left;font-size:.75rem;font-weight:600;color:var(--slate-light);text-transform:uppercase;letter-spacing:.5px;font-family:var(--font-head)}
+td{padding:12px 16px;font-size:.875rem;color:var(--navy);border-bottom:1px solid var(--border)}
+tr:last-child td{border:none}
+tr:hover td{background:#F8FBFD}
+
+/* ── Alert ── */
+.alert{padding:12px 16px;border-radius:var(--radius-sm);margin-bottom:1rem;font-size:.875rem}
+.alert-error{background:#FFF0F0;color:#c00;border:1px solid #ffd0d0}
+.alert-success{background:var(--green-light);color:var(--green-dark);border:1px solid #b2dece}
+.alert-info{background:#EFF6FF;color:#1e40af;border:1px solid #bfdbfe}
+
+/* ── Status badge ── */
+.status{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.status-confirmed{background:#E6F7F1;color:var(--green-dark)}
+.status-pending{background:#FFF3E0;color:#E65100}
+.status-cancelled{background:#FFF0F0;color:var(--red)}
+
+/* ── Utilities ── */
+.flex{display:flex}.gap-1{gap:.5rem}.gap-2{gap:1rem}.items-center{align-items:center}
+.justify-between{justify-content:space-between}.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}
+.mt-3{margin-top:1.5rem}.text-sm{font-size:.875rem}.text-xs{font-size:.78rem}
+.text-slate{color:var(--slate)}.text-green{color:var(--green)}.text-navy{color:var(--navy)}
+.fw-700{font-weight:700}.font-head{font-family:var(--font-head)}
+.text-center{text-align:center}.w-full{width:100%}
+.spin{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:640px){.grid-2{grid-template-columns:1fr}}
+.divider{height:1px;background:var(--border);margin:1.5rem 0}
+.empty{text-align:center;padding:3rem;color:var(--slate)}
+.empty-icon{font-size:2.5rem;margin-bottom:.5rem}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useCallback, createContext, useContext } = React;
+
+// ── API Base ──────────────────────────────────────────────
+const API = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : window.location.origin + '/api';
+const apiFetch = async (path, opts = {}) => {
+  const token = localStorage.getItem('bt_token');
+  const res = await fetch(API + path, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    ...opts,
+  });
+  return res.json();
+};
+
+// ── Auth Context ──────────────────────────────────────────
+const AuthCtx = createContext(null);
+const useAuth = () => useContext(AuthCtx);
+
+// ── Mock data for demo (replaces API when no server) ─────
+const MOCK_SCHEDULES = [
+  { schedule_id:1, bus_name:'Green Line Express', bus_type:'AC', operator_name:'Green Line Paribahan',
+    from_location:'Dhaka', to_location:'Chittagong', departure_time:'2026-04-01T22:00:00',
+    arrival_time:'2026-04-02T03:00:00', ticket_price:750, available_seats:32, total_seats:40,
+    distance_km:252, estimated_minutes:300 },
+  { schedule_id:2, bus_name:'Hanif Enterprise', bus_type:'Non-AC', operator_name:'Hanif Bus Service',
+    from_location:'Dhaka', to_location:'Chittagong', departure_time:'2026-04-01T21:00:00',
+    arrival_time:'2026-04-02T04:30:00', ticket_price:480, available_seats:18, total_seats:44,
+    distance_km:252, estimated_minutes:330 },
+  { schedule_id:3, bus_name:'Shohag Paribahan', bus_type:'Sleeper', operator_name:'Shohag Enterprise',
+    from_location:'Dhaka', to_location:'Chittagong', departure_time:'2026-04-01T23:00:00',
+    arrival_time:'2026-04-02T04:00:00', ticket_price:950, available_seats:8, total_seats:24,
+    distance_km:252, estimated_minutes:300 },
+];
+
+const MOCK_SEATS = Array.from({length:40},(_,i)=>{
+  const row = String.fromCharCode(65+Math.floor(i/4));
+  const col = (i%4)+1;
+  return { id:i+1, seat_number:`${row}${col}`,
+    seat_type: col===1||col===4?'Window':col===2?'Aisle':'Middle',
+    status: [3,7,12,15,22,28].includes(i+1)?'Booked':'Available' };
+});
+
+const MOCK_BOOKINGS = [
+  { id:1, booking_code:'BK-L9K2M-ABCD', total_fare:1500, status:'confirmed',
+    booked_at:'2026-03-20T10:30:00', travel_date:'2026-04-01', departure_time:'2026-04-01T22:00:00',
+    from_location:'Dhaka', to_location:'Chittagong', bus_name:'Green Line Express',
+    bus_type:'AC', seats:'A1, A2', ticket_code:'TK-XY99-WXYZ',
+    qr_code:'data:image/png;base64,iVBORw0KGgo=' },
+  { id:2, booking_code:'BK-M3N7P-EFGH', total_fare:480, status:'cancelled',
+    booked_at:'2026-03-15T14:00:00', travel_date:'2026-03-25', departure_time:'2026-03-25T21:00:00',
+    from_location:'Dhaka', to_location:'Chittagong', bus_name:'Hanif Enterprise',
+    bus_type:'Non-AC', seats:'B3', ticket_code:null, qr_code:null },
+];
+
+// ── Helpers ───────────────────────────────────────────────
+const fmt = (dt) => new Date(dt).toLocaleString('en-BD',{dateStyle:'medium',timeStyle:'short'});
+const fmtDate = (d) => new Date(d).toLocaleDateString('en-BD',{dateStyle:'medium'});
+const fmtTime = (dt) => new Date(dt).toLocaleTimeString('en-BD',{timeStyle:'short'});
+const duration = (dep,arr) => {
+  const m = Math.round((new Date(arr)-new Date(dep))/60000);
+  return `${Math.floor(m/60)}h ${m%60}m`;
+};
+
+// ══════════════════════════════════════════════════════════
+// COMPONENTS
+// ══════════════════════════════════════════════════════════
+
+// ── Navbar ────────────────────────────────────────────────
+function Navbar({ page, setPage }) {
+  const { user, logout } = useAuth();
+  const initials = user ? user.full_name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() : '';
+  return (
+    <nav className="navbar">
+      <div className="nav-logo" onClick={()=>setPage('home')} style={{cursor:'pointer'}}>
+        <span>BD</span>Tickets
+      </div>
+      <div className="nav-links">
+        {user ? (
+          <>
+            <button className="nav-btn ghost" onClick={()=>setPage(
+              user.role==='admin'?'admin':user.role==='operator'?'operator':
+              user.role==='counter_manager'?'counter':'passenger'
+            )}>Dashboard</button>
+            <div className="nav-user">
+              <div className="nav-avatar">{initials}</div>
+              <span>{user.full_name.split(' ')[0]}</span>
+            </div>
+            <button className="nav-btn outline" onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <>
+            <button className="nav-btn ghost" onClick={()=>setPage('login')}>Login</button>
+            <button className="nav-btn primary" onClick={()=>setPage('register')}>Register</button>
+          </>
+        )}
+      </div>
+    </nav>
+  );
+}
+
+// ── Hero + Search ─────────────────────────────────────────
+function Hero({ setPage, setSearchParams }) {
+  const [form, setForm] = useState({ from:'Dhaka', to:'Chittagong', date:'2026-04-01', bus_type:'' });
+  const cities = ['Dhaka','Chittagong','Sylhet','Rajshahi','Khulna','Barisal','Rangpur','Mymensingh','Comilla','Cox\'s Bazar'];
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearchParams(form);
+    setPage('search');
+  };
+
+  return (
+    <div className="hero">
+      <div className="hero-inner">
+        <div className="hero-tag">🇧🇩 Bangladesh's Smart Bus Ticketing</div>
+        <h1>Book Your Bus Ticket <em>Online</em>, Anywhere</h1>
+        <p>Search routes, pick your seat, pay with bKash or Nagad — get your QR ticket instantly.</p>
+        <div className="search-box">
+          <h3>🔍 Find Buses</h3>
+          <form onSubmit={handleSearch}>
+            <div className="search-grid">
+              <div className="form-group">
+                <label>From</label>
+                <select value={form.from} onChange={e=>setForm({...form,from:e.target.value})}>
+                  {cities.map(c=><option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>To</label>
+                <select value={form.to} onChange={e=>setForm({...form,to:e.target.value})}>
+                  {cities.map(c=><option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Date</label>
+                <input type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})}/>
+              </div>
+              <div className="form-group">
+                <label>Bus Type</label>
+                <select value={form.bus_type} onChange={e=>setForm({...form,bus_type:e.target.value})}>
+                  <option value="">All Types</option>
+                  <option>AC</option><option>Non-AC</option><option>Sleeper</option>
+                </select>
+              </div>
+              <button type="submit" className="btn btn-green">Search →</button>
+            </div>
+          </form>
+        </div>
+        {/* Quick stats */}
+        <div className="flex gap-2 mt-3" style={{flexWrap:'wrap',marginTop:'1.5rem'}}>
+          {[['50+','Bus Operators'],['200+','Routes Covered'],['24/7','Online Booking'],['QR','Verified Tickets']].map(([n,l])=>(
+            <div key={l} style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:10,padding:'12px 20px',color:'#fff'}}>
+              <div style={{fontFamily:'var(--font-head)',fontSize:'1.3rem',fontWeight:800,color:'var(--green)'}}>{n}</div>
+              <div style={{fontSize:'.75rem',color:'var(--slate)',marginTop:2}}>{l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Search Results ────────────────────────────────────────
+function SearchResults({ searchParams, setPage, setBookingData }) {
+  const { user } = useAuth();
+  const [results, setResults] = useState(MOCK_SCHEDULES);
+  const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [seats, setSeats] = useState(MOCK_SEATS);
+  const [chosenSeats, setChosenSeats] = useState([]);
+
+  const toggleSeat = (seat) => {
+    if (seat.status === 'Booked') return;
+    setChosenSeats(prev =>
+      prev.find(s=>s.id===seat.id) ? prev.filter(s=>s.id!==seat.id) : [...prev, seat]
+    );
+  };
+
+  const proceedToBook = () => {
+    if (!user) { setPage('login'); return; }
+    if (chosenSeats.length === 0) return;
+    setBookingData({ schedule: selected, seats: chosenSeats, searchParams });
+    setPage('booking');
+  };
+
+  const totalFare = selected ? chosenSeats.length * selected.ticket_price : 0;
+
+  // Group seats into rows of 4
+  const seatRows = [];
+  for (let i=0; i<seats.length; i+=4) seatRows.push(seats.slice(i,i+4));
+
+  return (
+    <div className="page-wide">
+      {/* Search summary bar */}
+      <div className="card flex items-center justify-between gap-2 mt-2" style={{padding:'1rem 1.5rem',flexWrap:'wrap'}}>
+        <div>
+          <span className="font-head fw-700 text-navy">{searchParams.from}</span>
+          <span className="text-slate" style={{margin:'0 10px'}}>→</span>
+          <span className="font-head fw-700 text-navy">{searchParams.to}</span>
+          <span className="text-sm text-slate" style={{marginLeft:12}}>{fmtDate(searchParams.date)}</span>
+        </div>
+        <button className="btn btn-outline btn-sm" onClick={()=>setPage('home')}>← Modify Search</button>
+      </div>
+
+      <div className="grid-2" style={{marginTop:'1.5rem',gridTemplateColumns:selected?'1fr 320px':'1fr'}}>
+        {/* Results list */}
+        <div>
+          <div className="section-title">{results.length} buses found</div>
+          {results.map(bus=>(
+            <div key={bus.schedule_id} className="bus-card" style={selected?.schedule_id===bus.schedule_id?{borderColor:'var(--green)'}:{}}>
+              <div>
+                <div className="flex items-center gap-1">
+                  <span className="bus-name">{bus.bus_name}</span>
+                  <span className={`badge badge-${bus.bus_type==='AC'?'green':bus.bus_type==='Sleeper'?'navy':'amber'}`}>{bus.bus_type}</span>
+                </div>
+                <div className="text-xs text-slate mt-1">{bus.operator_name}</div>
+                <div className="bus-route mt-2">
+                  <div>
+                    <div className="fw-700">{fmtTime(bus.departure_time)}</div>
+                    <div className="text-xs text-slate">{bus.from_location}</div>
+                  </div>
+                  <div style={{textAlign:'center',flex:1}}>
+                    <div className="route-line"></div>
+                    <div className="text-xs text-slate">{duration(bus.departure_time,bus.arrival_time)}</div>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div className="fw-700">{fmtTime(bus.arrival_time)}</div>
+                    <div className="text-xs text-slate">{bus.to_location}</div>
+                  </div>
+                </div>
+                <div className="bus-meta mt-1">
+                  <span className="text-xs text-slate">🪑 {bus.available_seats} seats left</span>
+                  <span className="text-xs text-slate">📍 {bus.distance_km} km</span>
+                </div>
+              </div>
+              <div className="bus-price">
+                <div className="price-amount">৳{bus.ticket_price}</div>
+                <div className="price-label">per seat</div>
+                <button className="btn btn-green btn-sm mt-2"
+                  onClick={()=>{ setSelected(bus); setChosenSeats([]); }}>
+                  {selected?.schedule_id===bus.schedule_id ? '✓ Selected' : 'Select'}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Seat map + summary panel */}
+        {selected && (
+          <div>
+            <div className="card" style={{position:'sticky',top:80}}>
+              <div className="section-title" style={{fontSize:'1rem'}}>Seat Map — <span>{selected.bus_name}</span></div>
+              <div className="seat-legend">
+                <div className="seat-legend-item"><div className="seat-legend-dot" style={{background:'#E6F7F1',border:'1.5px solid #b2dece'}}></div> Available</div>
+                <div className="seat-legend-item"><div className="seat-legend-dot" style={{background:'var(--green)'}}></div> Selected</div>
+                <div className="seat-legend-item"><div className="seat-legend-dot" style={{background:'#F1F3F5'}}></div> Booked</div>
+              </div>
+              <div className="seat-map-wrap">
+                <div style={{background:'var(--navy)',borderRadius:8,padding:'6px 0',textAlign:'center',marginBottom:10}}>
+                  <span className="text-xs" style={{color:'var(--slate-light)',letterSpacing:1}}>DRIVER</span>
+                </div>
+                <div className="seat-grid">
+                  {seatRows.map((row,ri)=>(
+                    <div className="seat-row" key={ri}>
+                      {row.slice(0,2).map(s=>(
+                        <button key={s.id} className={`seat ${chosenSeats.find(cs=>cs.id===s.id)?'selected':s.status.toLowerCase()}`}
+                          onClick={()=>toggleSeat(s)} title={`${s.seat_number} (${s.seat_type})`}>
+                          {s.seat_number}
+                        </button>
+                      ))}
+                      <div className="seat-aisle"></div>
+                      {row.slice(2).map(s=>(
+                        <button key={s.id} className={`seat ${chosenSeats.find(cs=>cs.id===s.id)?'selected':s.status.toLowerCase()}`}
+                          onClick={()=>toggleSeat(s)} title={`${s.seat_number} (${s.seat_type})`}>
+                          {s.seat_number}
+                        </button>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {chosenSeats.length > 0 && (
+                <div style={{marginTop:'1rem',background:'var(--navy)',borderRadius:10,padding:'1rem'}}>
+                  <div className="summary-row" style={{padding:'6px 0',borderBottom:'1px solid var(--navy-3)'}}>
+                    <span className="text-xs" style={{color:'var(--slate)'}}>Seats</span>
+                    <span className="text-sm" style={{color:'#fff'}}>{chosenSeats.map(s=>s.seat_number).join(', ')}</span>
+                  </div>
+                  <div className="summary-row" style={{padding:'6px 0',borderBottom:'1px solid var(--navy-3)'}}>
+                    <span className="text-xs" style={{color:'var(--slate)'}}>Price × {chosenSeats.length}</span>
+                    <span className="text-sm" style={{color:'#fff'}}>৳{selected.ticket_price} × {chosenSeats.length}</span>
+                  </div>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',paddingTop:10}}>
+                    <span className="text-sm" style={{color:'var(--slate-light)',fontWeight:600}}>Total</span>
+                    <span style={{fontFamily:'var(--font-head)',fontSize:'1.3rem',fontWeight:800,color:'var(--green)'}}>৳{totalFare}</span>
+                  </div>
+                  <button className="btn btn-green btn-full mt-2" onClick={proceedToBook}>
+                    Proceed to Book →
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Booking & Payment ─────────────────────────────────────
+function BookingPage({ bookingData, setPage }) {
+  const { schedule, seats } = bookingData;
+  const [payMethod, setPayMethod] = useState('bKash');
+  const [txn, setTxn] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+  const [ticket, setTicket] = useState(null);
+  const totalFare = seats.length * schedule.ticket_price;
+
+  const handlePay = async () => {
+    if (!txn && payMethod !== 'Cash') return;
+    setLoading(true);
+    // Mock: generate ticket
+    await new Promise(r=>setTimeout(r,1500));
+    setTicket({
+      ticket_code: 'TK-' + Math.random().toString(36).substring(2,6).toUpperCase() + '-DEMO',
+      booking_code: 'BK-' + Date.now().toString(36).toUpperCase(),
+      qr_code: null,
+    });
+    setDone(true);
+    setLoading(false);
+  };
+
+  if (done && ticket) return (
+    <div className="page">
+      <div className="alert alert-success" style={{textAlign:'center',padding:'1rem'}}>
+        🎉 Booking Confirmed! Your ticket is ready.
+      </div>
+      <div className="ticket">
+        <div className="ticket-header">
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <h2>🚌 BDTickets</h2>
+            <span className="status status-confirmed">Confirmed</span>
+          </div>
+          <div style={{marginTop:8,fontSize:'.85rem',opacity:.7}}>{ticket.booking_code}</div>
+        </div>
+        <div className="ticket-body">
+          {[
+            ['From',schedule.from_location],['To',schedule.to_location],
+            ['Date',fmtDate(schedule.departure_time)],
+            ['Departure',fmtTime(schedule.departure_time)],
+            ['Arrival',fmtTime(schedule.arrival_time)],
+            ['Bus',schedule.bus_name],['Type',schedule.bus_type],
+            ['Seats',seats.map(s=>s.seat_number).join(', ')],
+            ['Fare',`৳${totalFare}`],['Payment',payMethod],
+          ].map(([k,v])=>(
+            <div className="ticket-row" key={k}>
+              <span className="ticket-key">{k}</span>
+              <span className="ticket-val">{v}</span>
+            </div>
+          ))}
+          <div className="ticket-qr">
+            <div style={{width:140,height:140,background:'var(--green-light)',border:'2px dashed var(--green)',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto',color:'var(--green)',fontSize:'.75rem',fontWeight:600}}>
+              QR Code<br/>(Generated<br/>by server)
+            </div>
+            <div className="ticket-code">{ticket.ticket_code}</div>
+          </div>
+        </div>
+        <div className="ticket-footer">
+          Present this ticket at boarding. Valid for the date and seat(s) shown only.
+        </div>
+      </div>
+      <div className="flex gap-2 mt-3" style={{justifyContent:'center'}}>
+        <button className="btn btn-green" onClick={()=>window.print()}>🖨️ Print Ticket</button>
+        <button className="btn btn-outline" onClick={()=>setPage('home')}>Back to Home</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="page">
+      <div className="flex items-center gap-2 mt-2 mb-3">
+        <button className="btn btn-outline btn-sm" onClick={()=>setPage('search')}>← Back</button>
+        <div className="section-title" style={{margin:0}}>Complete Your Booking</div>
+      </div>
+
+      <div className="grid-2">
+        {/* Left: Details */}
+        <div>
+          <div className="card">
+            <div className="text-xs text-slate" style={{textTransform:'uppercase',letterSpacing:.5,marginBottom:'.5rem'}}>Journey Details</div>
+            <div className="bus-route">
+              <div><div className="fw-700">{fmtTime(schedule.departure_time)}</div><div className="text-xs text-slate">{schedule.from_location}</div></div>
+              <div style={{flex:1,textAlign:'center'}}><div className="route-line"></div><div className="text-xs text-slate">{duration(schedule.departure_time,schedule.arrival_time)}</div></div>
+              <div style={{textAlign:'right'}}><div className="fw-700">{fmtTime(schedule.arrival_time)}</div><div className="text-xs text-slate">{schedule.to_location}</div></div>
+            </div>
+            <div className="divider"></div>
+            <div className="flex justify-between text-sm mt-1">
+              <span className="text-slate">Bus</span><span className="fw-700">{schedule.bus_name}</span>
+            </div>
+            <div className="flex justify-between text-sm mt-1">
+              <span className="text-slate">Date</span><span className="fw-700">{fmtDate(schedule.departure_time)}</span>
+            </div>
+            <div className="flex justify-between text-sm mt-1">
+              <span className="text-slate">Seats</span><span className="fw-700">{seats.map(s=>s.seat_number).join(', ')}</span>
+            </div>
+          </div>
+
+          <div className="card mt-2">
+            <div className="text-xs text-slate" style={{textTransform:'uppercase',letterSpacing:.5,marginBottom:'1rem'}}>Payment Method</div>
+            <div className="payment-methods">
+              {[['bKash','📱','bKash'],['Nagad','💛','Nagad'],['Rocket','🚀','Rocket'],['Card','💳','Card/Bank'],['Cash','💵','Cash']].map(([m,ic,lab])=>(
+                <div key={m} className={`pay-method ${payMethod===m?'active':''}`} onClick={()=>setPayMethod(m)}>
+                  <div className="pay-icon">{ic}</div>{lab}
+                </div>
+              ))}
+            </div>
+            {payMethod !== 'Cash' && (
+              <div className="input-group mt-2">
+                <label>Transaction ID / Reference</label>
+                <input placeholder={`Enter ${payMethod} transaction ID`} value={txn} onChange={e=>setTxn(e.target.value)}/>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right: Summary */}
+        <div>
+          <div className="booking-summary">
+            <h3>Booking Summary</h3>
+            {seats.map(s=>(
+              <div className="summary-row" key={s.id}>
+                <span className="summary-label">Seat {s.seat_number} ({s.seat_type})</span>
+                <span>৳{schedule.ticket_price}</span>
+              </div>
+            ))}
+            <div className="summary-row">
+              <span className="summary-label">Subtotal</span>
+              <span>৳{totalFare}</span>
+            </div>
+            <div className="summary-row">
+              <span>Total</span>
+              <span>৳{totalFare}</span>
+            </div>
+            <button className="btn btn-green btn-full mt-3" onClick={handlePay}
+              disabled={loading||(!txn&&payMethod!=='Cash')}>
+              {loading ? <><span className="spin"></span> Processing…</> : `Pay ৳${totalFare} & Confirm`}
+            </button>
+            <div className="text-xs text-center mt-2" style={{color:'var(--slate)',lineHeight:1.5}}>
+              🔒 Secure payment. Booking confirmed after payment.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Passenger Dashboard ───────────────────────────────────
+function PassengerDashboard({ setPage }) {
+  const { user } = useAuth();
+  const [tab, setTab] = useState('bookings');
+
+  return (
+    <div className="page">
+      <div className="section-title mt-2">Welcome back, <span>{user.full_name.split(' ')[0]}</span>!</div>
+      <div className="stats-grid">
+        {[['2','Total Trips',''],['1','Upcoming',''],['0','Cancellations','']].map(([n,l,c])=>(
+          <div className="stat-card" key={l}>
+            <div className="stat-number">{n}</div>
+            <div className="stat-label">{l}</div>
+          </div>
+        ))}
+      </div>
+      <div className="dash-tabs">
+        {[['bookings','My Bookings'],['profile','Profile']].map(([k,v])=>(
+          <button key={k} className={`dash-tab ${tab===k?'active':''}`} onClick={()=>setTab(k)}>{v}</button>
+        ))}
+      </div>
+
+      {tab==='bookings' && (
+        <div>
+          {MOCK_BOOKINGS.map(bk=>(
+            <div className="card" key={bk.id} style={{marginBottom:'1rem'}}>
+              <div className="flex justify-between items-center" style={{flexWrap:'wrap',gap:8}}>
+                <div>
+                  <div className="font-head fw-700">{bk.from_location} → {bk.to_location}</div>
+                  <div className="text-xs text-slate mt-1">{fmt(bk.departure_time)} · {bk.bus_name} · Seats: {bk.seats}</div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className={`status status-${bk.status}`}>{bk.status}</span>
+                  <span className="font-head fw-700 text-green">৳{bk.total_fare}</span>
+                </div>
+              </div>
+              <div className="divider"></div>
+              <div className="flex gap-1" style={{flexWrap:'wrap'}}>
+                <span className="text-xs text-slate">Code: <strong>{bk.booking_code}</strong></span>
+                {bk.status==='confirmed' && <button className="btn btn-outline btn-sm">Download Ticket</button>}
+                {bk.status==='confirmed' && <button className="btn btn-sm" style={{background:'#FFF0F0',color:'var(--red)',border:'1px solid #ffd0d0'}}>Cancel</button>}
+              </div>
+            </div>
+          ))}
+          <button className="btn btn-green" onClick={()=>setPage('home')}>+ Book New Trip</button>
+        </div>
+      )}
+
+      {tab==='profile' && (
+        <div className="card">
+          <div className="section-title" style={{fontSize:'1rem',marginBottom:'1.2rem'}}>Profile Information</div>
+          {[['Full Name',user.full_name],['Email',user.email],['Phone','01711111111'],['Role',user.role]].map(([k,v])=>(
+            <div className="flex justify-between text-sm" style={{padding:'10px 0',borderBottom:'1px solid var(--border)'}} key={k}>
+              <span className="text-slate">{k}</span><span className="fw-700">{v}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Operator Dashboard ────────────────────────────────────
+function OperatorDashboard() {
+  const { user } = useAuth();
+  const [tab, setTab] = useState('overview');
+  const [form, setForm] = useState({ bus_name:'', reg_number:'', bus_type:'AC', total_seats:40 });
+  const [msg, setMsg] = useState('');
+
+  const handleAddBus = (e) => {
+    e.preventDefault();
+    setMsg('Bus "' + form.bus_name + '" added successfully! (Demo — connect to API for persistence)');
+    setForm({ bus_name:'', reg_number:'', bus_type:'AC', total_seats:40 });
+  };
+
+  return (
+    <div className="page-wide">
+      <div className="section-title mt-2">Operator Dashboard — <span>{user.full_name}</span></div>
+      <div className="stats-grid">
+        {[['3','Active Buses'],['2','Routes'],['5','Schedules'],['৳12,450','This Month']].map(([n,l])=>(
+          <div className="stat-card" key={l}><div className="stat-number">{n}</div><div className="stat-label">{l}</div></div>
+        ))}
+      </div>
+      <div className="dash-tabs">
+        {[['overview','Overview'],['buses','Buses'],['routes','Routes'],['schedules','Schedules'],['bookings','Bookings'],['reports','Reports']].map(([k,v])=>(
+          <button key={k} className={`dash-tab ${tab===k?'active':''}`} onClick={()=>setTab(k)}>{v}</button>
+        ))}
+      </div>
+
+      {tab==='overview' && (
+        <div className="card">
+          <div className="section-title" style={{fontSize:'1rem'}}>Recent Bookings</div>
+          <div className="table-wrap">
+            <table>
+              <thead><tr><th>Code</th><th>Passenger</th><th>Route</th><th>Date</th><th>Fare</th><th>Status</th></tr></thead>
+              <tbody>
+                {MOCK_BOOKINGS.map(b=>(
+                  <tr key={b.id}>
+                    <td><code style={{fontSize:'.78rem'}}>{b.booking_code}</code></td>
+                    <td>Rahim Uddin</td>
+                    <td>{b.from_location} → {b.to_location}</td>
+                    <td className="text-xs">{fmtDate(b.travel_date)}</td>
+                    <td className="fw-700 text-green">৳{b.total_fare}</td>
+                    <td><span className={`status status-${b.status}`}>{b.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {tab==='buses' && (
+        <div className="grid-2">
+          <div>
+            <div className="card">
+              <div className="section-title" style={{fontSize:'1rem',marginBottom:'1rem'}}>Add New Bus</div>
+              {msg && <div className="alert alert-success">{msg}</div>}
+              <form onSubmit={handleAddBus}>
+                {[['Bus Name','bus_name','text','e.g. Green Line Express'],['Registration No.','reg_number','text','e.g. DHAKA-B-1234']].map(([l,k,t,p])=>(
+                  <div className="input-group" key={k}>
+                    <label>{l}</label>
+                    <input type={t} placeholder={p} value={form[k]} onChange={e=>setForm({...form,[k]:e.target.value})} required/>
+                  </div>
+                ))}
+                <div className="input-group">
+                  <label>Bus Type</label>
+                  <select value={form.bus_type} onChange={e=>setForm({...form,bus_type:e.target.value})}>
+                    <option>AC</option><option>Non-AC</option><option>Sleeper</option>
+                  </select>
+                </div>
+                <div className="input-group">
+                  <label>Total Seats</label>
+                  <input type="number" value={form.total_seats} onChange={e=>setForm({...form,total_seats:e.target.value})} min={10} max={60}/>
+                </div>
+                <button type="submit" className="btn btn-green btn-full">Add Bus</button>
+              </form>
+            </div>
+          </div>
+          <div>
+            <div className="card">
+              <div className="section-title" style={{fontSize:'1rem',marginBottom:'1rem'}}>Your Buses</div>
+              {[{name:'Green Line Express',type:'AC',seats:40,reg:'DHAKA-B-1234'}].map((b,i)=>(
+                <div key={i} style={{padding:'12px 0',borderBottom:'1px solid var(--border)'}}>
+                  <div className="fw-700">{b.name}</div>
+                  <div className="flex gap-1 mt-1">
+                    <span className="badge badge-green">{b.type}</span>
+                    <span className="text-xs text-slate">🪑 {b.seats} seats · {b.reg}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {tab==='reports' && (
+        <div>
+          <div className="stats-grid">
+            {[['৳12,450','Total Revenue'],['16','Tickets Sold'],['1','Cancellations'],['90%','Occupancy Rate']].map(([n,l])=>(
+              <div className="stat-card" key={l}><div className="stat-number">{n}</div><div className="stat-label">{l}</div></div>
+            ))}
+          </div>
+          <div className="card">
+            <div className="section-title" style={{fontSize:'1rem'}}>Top Routes</div>
+            {[['Dhaka → Chittagong',12],['Dhaka → Sylhet',4]].map(([r,c])=>(
+              <div key={r} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'10px 0',borderBottom:'1px solid var(--border)'}}>
+                <span className="fw-700">{r}</span>
+                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                  <div style={{width:80,height:8,background:'var(--green-light)',borderRadius:4,overflow:'hidden'}}>
+                    <div style={{width:`${(c/12)*100}%`,height:'100%',background:'var(--green)',borderRadius:4}}></div>
+                  </div>
+                  <span className="text-sm fw-700">{c} bookings</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {(tab==='routes'||tab==='schedules'||tab==='bookings') && (
+        <div className="card">
+          <div className="empty">
+            <div className="empty-icon">🔌</div>
+            <div className="fw-700">Connect to Backend API</div>
+            <div className="text-sm text-slate mt-1">Run the Node.js server and this section will load live data.</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Counter Manager Dashboard ─────────────────────────────
+function CounterDashboard() {
+  const [form, setForm] = useState({ customer_name:'', contact:'', from:'Dhaka', to:'Chittagong', date:'2026-04-01', seat:'A1', amount:'' });
+  const [done, setDone] = useState(false);
+
+  const handleBook = (e) => { e.preventDefault(); setDone(true); };
+
+  return (
+    <div className="page">
+      <div className="section-title mt-2">Counter Manager — Walk-in Booking</div>
+      <div className="stats-grid">
+        {[['5','Tickets Today'],['৳3,600','Cash Collected'],['Morning','Shift']].map(([n,l])=>(
+          <div className="stat-card" key={l}><div className="stat-number">{n}</div><div className="stat-label">{l}</div></div>
+        ))}
+      </div>
+      {done ? (
+        <div className="card text-center">
+          <div style={{fontSize:'2.5rem',marginBottom:'.5rem'}}>🎟️</div>
+          <div className="section-title" style={{fontSize:'1.1rem',marginBottom:'.5rem'}}>Ticket Printed!</div>
+          <div className="text-sm text-slate">Walk-in booking recorded. Cash collected.</div>
+          <button className="btn btn-green mt-3" onClick={()=>setDone(false)}>+ New Booking</button>
+        </div>
+      ) : (
+        <div className="card" style={{maxWidth:520}}>
+          <div className="section-title" style={{fontSize:'1rem',marginBottom:'1.2rem'}}>New Walk-in Ticket</div>
+          <form onSubmit={handleBook}>
+            <div className="input-group"><label>Customer Name</label><input placeholder="Full name" value={form.customer_name} onChange={e=>setForm({...form,customer_name:e.target.value})} required/></div>
+            <div className="input-group"><label>Contact Number</label><input placeholder="017XXXXXXXX" value={form.contact} onChange={e=>setForm({...form,contact:e.target.value})} required/></div>
+            <div className="grid-2">
+              <div className="input-group"><label>From</label>
+                <select value={form.from} onChange={e=>setForm({...form,from:e.target.value})}>
+                  {['Dhaka','Chittagong','Sylhet'].map(c=><option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div className="input-group"><label>To</label>
+                <select value={form.to} onChange={e=>setForm({...form,to:e.target.value})}>
+                  {['Chittagong','Dhaka','Sylhet'].map(c=><option key={c}>{c}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="grid-2">
+              <div className="input-group"><label>Travel Date</label><input type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})}/></div>
+              <div className="input-group"><label>Seat Number</label><input placeholder="e.g. A1" value={form.seat} onChange={e=>setForm({...form,seat:e.target.value})}/></div>
+            </div>
+            <div className="input-group"><label>Cash Amount (৳)</label><input type="number" placeholder="750" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} required/></div>
+            <button type="submit" className="btn btn-green btn-full">Book & Print Ticket</button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Admin Dashboard ───────────────────────────────────────
+function AdminDashboard() {
+  const [tab, setTab] = useState('overview');
+
+  return (
+    <div className="page-wide">
+      <div className="section-title mt-2">Admin Panel</div>
+      <div className="stats-grid">
+        {[['1,248','Total Passengers'],['23','Operators'],['156','Active Buses'],['৳4.2L','Total Revenue']].map(([n,l])=>(
+          <div className="stat-card" key={l}><div className="stat-number">{n}</div><div className="stat-label">{l}</div></div>
+        ))}
+      </div>
+      <div className="dash-tabs">
+        {[['overview','Overview'],['users','Users'],['operators','Operator Approvals'],['reports','Reports']].map(([k,v])=>(
+          <button key={k} className={`dash-tab ${tab===k?'active':''}`} onClick={()=>setTab(k)}>{v}</button>
+        ))}
+      </div>
+
+      {tab==='overview' && (
+        <div className="grid-2">
+          <div className="card">
+            <div className="section-title" style={{fontSize:'1rem',marginBottom:'1rem'}}>Payment Methods</div>
+            {[['bKash',62],['Nagad',21],['Card',11],['Cash',6]].map(([m,pct])=>(
+              <div key={m} style={{marginBottom:10}}>
+                <div className="flex justify-between text-sm mb-1"><span>{m}</span><span className="fw-700">{pct}%</span></div>
+                <div style={{height:8,background:'var(--green-light)',borderRadius:4,overflow:'hidden'}}>
+                  <div style={{width:`${pct}%`,height:'100%',background:'var(--green)',borderRadius:4}}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="card">
+            <div className="section-title" style={{fontSize:'1rem',marginBottom:'1rem'}}>Most Popular Routes</div>
+            {[['Dhaka → Chittagong',890],['Dhaka → Sylhet',310],['Dhaka → Cox\'s Bazar',240],['Chittagong → Sylhet',48]].map(([r,c])=>(
+              <div key={r} className="flex justify-between text-sm" style={{padding:'8px 0',borderBottom:'1px solid var(--border)'}}>
+                <span>{r}</span><span className="fw-700 text-green">{c} trips</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab==='operators' && (
+        <div className="card">
+          <div className="section-title" style={{fontSize:'1rem',marginBottom:'1rem'}}>Pending Operator Approvals</div>
+          <div className="table-wrap">
+            <table>
+              <thead><tr><th>Company</th><th>Owner</th><th>Contact</th><th>License</th><th>Action</th></tr></thead>
+              <tbody>
+                {[{co:'Dhaka Express Ltd',name:'Karim Ahmed',ph:'01733445566',lic:'BL-2026-DX-002'}].map((op,i)=>(
+                  <tr key={i}>
+                    <td className="fw-700">{op.co}</td><td>{op.name}</td>
+                    <td className="text-xs">{op.ph}</td>
+                    <td><code className="text-xs">{op.lic}</code></td>
+                    <td>
+                      <div className="flex gap-1">
+                        <button className="btn btn-green btn-sm">Approve</button>
+                        <button className="btn btn-sm" style={{background:'#FFF0F0',color:'var(--red)',border:'1px solid #ffd0d0'}}>Reject</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {tab==='users' && (
+        <div className="card">
+          <div className="section-title" style={{fontSize:'1rem',marginBottom:'1rem'}}>All Users</div>
+          <div className="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody>
+                {[{name:'Rahim Uddin',email:'rahim@example.com',role:'passenger',status:'active'},
+                  {name:'Green Line',email:'greenline@ops.com',role:'operator',status:'active'},
+                  {name:'Counter Staff',email:'counter@bus.com',role:'counter_manager',status:'active'}].map((u,i)=>(
+                  <tr key={i}>
+                    <td className="fw-700">{u.name}</td><td className="text-sm">{u.email}</td>
+                    <td><span className="badge badge-navy">{u.role}</span></td>
+                    <td><span className="status status-confirmed">{u.status}</span></td>
+                    <td><button className="btn btn-sm" style={{background:'#FFF0F0',color:'var(--red)',border:'1px solid #ffd0d0'}}>Suspend</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {tab==='reports' && (
+        <div className="stats-grid">
+          {[['৳4,20,000','Total Revenue'],['3,456','Tickets Sold'],['234','Cancellations'],['4.8%','Cancel Rate'],['bKash','Top Payment'],['Dhaka→CTG','Top Route']].map(([n,l])=>(
+            <div className="stat-card" key={l}><div className="stat-number" style={{fontSize:'1.2rem'}}>{n}</div><div className="stat-label">{l}</div></div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Auth Pages ────────────────────────────────────────────
+function LoginPage({ setPage }) {
+  const { login } = useAuth();
+  const [form, setForm] = useState({ email:'', password:'' });
+  const [err, setErr] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // Demo accounts
+  const demos = [
+    { email:'passenger@demo.com', password:'demo123', role:'passenger', full_name:'Rahim Uddin' },
+    { email:'operator@demo.com',  password:'demo123', role:'operator',  full_name:'Green Line Paribahan' },
+    { email:'counter@demo.com',   password:'demo123', role:'counter_manager', full_name:'Counter Staff' },
+    { email:'admin@demo.com',     password:'demo123', role:'admin',     full_name:'System Admin' },
+  ];
+
+  const handleLogin = async (e) => {
+    e.preventDefault(); setErr(''); setLoading(true);
+    await new Promise(r=>setTimeout(r,800));
+    const found = demos.find(d=>d.email===form.email&&d.password===form.password);
+    if (found) { login(found); setPage(found.role==='admin'?'admin':found.role==='operator'?'operator':found.role==='counter_manager'?'counter':'passenger'); }
+    else setErr('Invalid email or password. Try a demo account below.');
+    setLoading(false);
+  };
+
+  return (
+    <div className="page">
+      <div className="auth-wrap">
+        <h2>Welcome Back</h2>
+        <p>Log in to your BDTickets account</p>
+        {err && <div className="alert alert-error">{err}</div>}
+        <form onSubmit={handleLogin}>
+          <div className="input-group"><label>Email</label><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} required/></div>
+          <div className="input-group"><label>Password</label><input type="password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} required/></div>
+          <button type="submit" className="btn btn-green btn-full" disabled={loading}>{loading?<><span className="spin"></span> Logging in…</>:'Login'}</button>
+        </form>
+        <div className="divider"></div>
+        <div className="text-xs text-slate" style={{marginBottom:8}}>Demo accounts (click to fill):</div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6}}>
+          {demos.map(d=>(
+            <button key={d.role} className="btn btn-outline btn-sm" style={{fontSize:'.75rem'}}
+              onClick={()=>setForm({email:d.email,password:'demo123'})}>
+              {d.role.replace('_',' ')}
+            </button>
+          ))}
+        </div>
+        <div className="auth-switch">Don't have an account? <button onClick={()=>setPage('register')}>Register</button></div>
+      </div>
+    </div>
+  );
+}
+
+function RegisterPage({ setPage }) {
+  const { login } = useAuth();
+  const [form, setForm] = useState({ full_name:'', email:'', phone:'', password:'', confirm:'' });
+  const [err, setErr] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async (e) => {
+    e.preventDefault(); setErr('');
+    if (form.password !== form.confirm) { setErr('Passwords do not match.'); return; }
+    setLoading(true);
+    await new Promise(r=>setTimeout(r,800));
+    login({ ...form, role:'passenger' });
+    setPage('passenger');
+  };
+
+  return (
+    <div className="page">
+      <div className="auth-wrap">
+        <h2>Create Account</h2>
+        <p>Join BDTickets and book bus tickets online</p>
+        {err && <div className="alert alert-error">{err}</div>}
+        <form onSubmit={handleRegister}>
+          {[['Full Name','full_name','text','Your full name'],['Email','email','email','you@example.com'],['Phone','phone','tel','017XXXXXXXX']].map(([l,k,t,p])=>(
+            <div className="input-group" key={k}><label>{l}</label><input type={t} placeholder={p} value={form[k]} onChange={e=>setForm({...form,[k]:e.target.value})} required/></div>
+          ))}
+          <div className="input-group"><label>Password</label><input type="password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} required minLength={6}/></div>
+          <div className="input-group"><label>Confirm Password</label><input type="password" value={form.confirm} onChange={e=>setForm({...form,confirm:e.target.value})} required/></div>
+          <button type="submit" className="btn btn-green btn-full" disabled={loading}>{loading?<><span className="spin"></span> Creating…</>:'Register'}</button>
+        </form>
+        <div className="auth-switch">Already have an account? <button onClick={()=>setPage('login')}>Login</button></div>
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════
+// APP ROOT
+// ══════════════════════════════════════════════════════════
+function App() {
+  const [page, setPage] = useState('home');
+  const [searchParams, setSearchParams] = useState({ from:'Dhaka', to:'Chittagong', date:'2026-04-01', bus_type:'' });
+  const [bookingData, setBookingData] = useState(null);
+  const [user, setUser] = useState(null);
+
+  const login = (u) => { setUser(u); localStorage.setItem('bt_user', JSON.stringify(u)); };
+  const logout = () => { setUser(null); localStorage.removeItem('bt_user'); localStorage.removeItem('bt_token'); setPage('home'); };
+
+  useEffect(() => {
+    const saved = localStorage.getItem('bt_user');
+    if (saved) try { setUser(JSON.parse(saved)); } catch {}
+  }, []);
+
+  const renderPage = () => {
+    switch (page) {
+      case 'home':    return <><Hero setPage={setPage} setSearchParams={setSearchParams}/><HomeFeatures/></>;
+      case 'search':  return <SearchResults searchParams={searchParams} setPage={setPage} setBookingData={setBookingData}/>;
+      case 'booking': return bookingData ? <BookingPage bookingData={bookingData} setPage={setPage}/> : null;
+      case 'passenger': return <PassengerDashboard setPage={setPage}/>;
+      case 'operator':  return <OperatorDashboard/>;
+      case 'counter':   return <CounterDashboard/>;
+      case 'admin':     return <AdminDashboard/>;
+      case 'login':     return <LoginPage setPage={setPage}/>;
+      case 'register':  return <RegisterPage setPage={setPage}/>;
+      default:          return <Hero setPage={setPage} setSearchParams={setSearchParams}/>;
+    }
+  };
+
+  return (
+    <AuthCtx.Provider value={{ user, login, logout }}>
+      <div className="app">
+        <Navbar page={page} setPage={setPage}/>
+        <main style={{flex:1}}>{renderPage()}</main>
+        <Footer/>
+      </div>
+    </AuthCtx.Provider>
+  );
+}
+
+function HomeFeatures() {
+  const features = [
+    ['🔍','Search & Compare','Find buses across all operators with real-time seat availability.'],
+    ['🪑','Pick Your Seat','Interactive seat map — choose window, aisle, or sleeper.'],
+    ['📱','Pay with bKash/Nagad','Secure digital payment with Bangladesh\'s top mobile banking apps.'],
+    ['🎟️','QR E-Ticket','Instant digital ticket with QR code for boarding verification.'],
+    ['📊','Operator Dashboard','Bus operators manage buses, routes, schedules & revenue reports.'],
+    ['🔒','Admin Control','Full system oversight — user management, approvals, analytics.'],
+  ];
+  return (
+    <div className="page" style={{paddingTop:'2.5rem'}}>
+      <div className="text-center" style={{marginBottom:'2rem'}}>
+        <div className="section-title" style={{fontSize:'1.6rem'}}>Everything You Need to <span>Travel Smart</span></div>
+        <div className="text-sm text-slate">Built for Bangladesh's bus network — fast, transparent, paperless.</div>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))',gap:'1rem'}}>
+        {features.map(([icon,title,desc])=>(
+          <div className="card" key={title} style={{transition:'transform .2s,box-shadow .2s'}}
+            onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-3px)';e.currentTarget.style.boxShadow='0 8px 30px rgba(0,168,107,0.12)'}}
+            onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow=''}}>
+            <div style={{fontSize:'1.8rem',marginBottom:'.6rem'}}>{icon}</div>
+            <div className="font-head fw-700" style={{marginBottom:'.3rem'}}>{title}</div>
+            <div className="text-sm text-slate">{desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Footer() {
+  return (
+    <footer style={{background:' var(--navy)',color:'var(--slate)',padding:'1.5rem 2rem',marginTop:'3rem',textAlign:'center',fontSize:'.8rem'}}>
+      <div style={{fontFamily:'var(--font-head)',color:'#fff',marginBottom:4}}>
+        <span style={{color:'var(--green)'}}>BD</span>Tickets
+      </div>
+      <div>Bus E-Ticketing System · CSE-4205 System Analysis &amp; Design Lab</div>
+      <div style={{marginTop:4}}>Ekther Jahan (202231064045) &amp; Fahmedul Hasan Nahid (202231064044)</div>
+    </footer>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
